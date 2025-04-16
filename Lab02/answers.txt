@@ -1,0 +1,6 @@
+Yes. With Java's method overloading mechanism, as long as the list of input parameters is different, you can define multiple constructors in the same class.
+
+
+Java is strictly pass-by-value, because: 
+- The swap method swaps the local copies of the references (o1 and o2), but this does not affect the original references (jungleDVD and cinderellaDVD) in the main method.
+- After setting the title, the line dvd = new DigitalVideoDisc(oldTitle) creates a new object and assigns it to the local reference dvd, but this does not affect the original reference (jungleDVD) in the main method.
