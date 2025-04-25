@@ -1,6 +1,19 @@
-Yes. With Java's method overloading mechanism, as long as the list of input parameters is different, you can define multiple constructors in the same class.
+10
+Question 1: If you create a constructor method to build a DVD by title then create a constructor method to build a DVD by category. Does JAVA allow you to do this?
 
+Nếu cả hai constructor đều dùng một tham số kiểu String (vì cả title và category đều là String), thì Java sẽ không cho phép điều này vì sẽ gây ra lỗi constructor duplication.
 
-Java is strictly pass-by-value, because: 
-- The swap method swaps the local copies of the references (o1 and o2), but this does not affect the original references (jungleDVD and cinderellaDVD) in the main method.
-- After setting the title, the line dvd = new DigitalVideoDisc(oldTitle) creates a new object and assigns it to the local reference dvd, but this does not affect the original reference (jungleDVD) in the main method.
+Tuy nhiên, nếu mỗi constructor sử dụng kiểu dữ liệu khác nhau cho tham số (ví dụ: int cho id, String cho title), thì Java cho phép vì nó có thể phân biệt được qua kiểu tham số — đây gọi là method overloading.
+
+15
+Question 1: Is JAVA a Pass by Value or a Pass by Reference programming language?
+
+Java là một ngôn ngữ Pass by Value.
+
+Question 2: After the call of swap(jungleDVD, cinderellaDVD), why do the titles of these two objects still remain unchanged?
+
+Mặc dù bạn truyền các object vào hàm swap, nhưng Java chỉ truyền giá trị của tham chiếu đối tượng (không phải bản thân đối tượng). Do đó, khi bạn hoán đổi hai biến bên trong hàm swap, chỉ có bản sao của tham chiếu bị thay đổi, không ảnh hưởng gì đến bản thân các đối tượng ban đầu (jungleDVD, cinderellaDVD).
+
+Question 3: After the call of changeTitle(jungleDVD, cinderellaDVD.getTitle()), why is the title of the JungleDVD changed?
+
+Biến dvd trong hàm changeTitle là bản sao của tham chiếu đến jungleDVD. Khi gọi dvd.setTitle(...), tức là bạn đang thay đổi thuộc tính của đối tượng gốc mà dvd trỏ tới — trong trường hợp này là jungleDVD. Vì thế, tiêu đề (title) của jungleDVD bị thay đổi.
