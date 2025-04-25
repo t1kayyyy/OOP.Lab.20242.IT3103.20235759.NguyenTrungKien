@@ -1,0 +1,57 @@
+
+1. What class should implement the Comparable interface? 
+Lớp `Media` nên triển khai `Comparable<Media>`, vì giỏ hàng chứa các đối tượng `Media` (bao gồm `DigitalVideoDisc`, `Book`, `CompactDisc`) cần so sánh.
+
+2. In those classes, how should you implement the compareTo()method to reflect the ordering that we want?   
+Chọn sắp xếp theo tiêu đề, rồi giá giảm dần:  
+
+public abstract class Media implements Comparable<Media> {
+    @Override
+    public int compareTo(Media other) {
+        int titleComparison = title.compareToIgnoreCase(other.title);
+        return titleComparison != 0 ? titleComparison : Float.compare(other.cost, this.cost);
+    }
+}
+
+3. Can we have two ordering rules of the item (by title then cost and by cost then title) if we use this Comparable interface approach?  
+Không, `Comparable` chỉ hỗ trợ một quy tắc sắp xếp tự nhiên. Để có hai quy tắc, cần dùng `Comparator` bổ sung (như MediaComparatorByTitleCost, MediaComparatorByCostTitle trong Lab 03).
+
+import java.util.Comparator;
+public class MediaComparatorByCostTitle implements Comparator<Media> {
+    @Override
+    public int compare(Media m1, Media m2) {
+        int costComparison = Float.compare(m2.getCost(), m1.getCost());
+        if (costComparison != 0) {
+            return costComparison;
+        }
+        return m1.getTitle().compareToIgnoreCase(m2.getTitle());
+    }
+}
+
+4.Suppose the DVDs have a different ordering rule from the other media types, that is by title, then decreasing length, then cost. How would you modify your code to allow this? 
+Sử dụng Comparator riêng cho DigitalVideoDisc:
+Triển khai:
+Tạo lớp DigitalVideoDiscComparatorByTitleLengthCost:
+
+package hust.soict.dsai.aims.media;
+import java.util.Comparator;
+public class DigitalVideoDiscComparatorByTitleLengthCost implements Comparator<Media> {
+    @Override
+    public int compare(Media m1, Media m2) {
+        if (!(m1 instanceof DigitalVideoDisc) || !(m2 instanceof DigitalVideoDisc)) {
+            return m1.compareTo(m2);
+        }
+
+        DigitalVideoDisc dvd1 = (DigitalVideoDisc) m1;
+        DigitalVideoDisc dvd2 = (DigitalVideoDisc) m2;
+        int titleComparison = dvd1.getTitle().compareToIgnoreCase(dvd2.getTitle());
+        if (titleComparison != 0) {
+            return titleComparison;
+        }
+        int lengthComparison = Integer.compare(dvd2.getLength(), dvd1.getLength());
+        if (lengthComparison != 0) {
+            return lengthComparison;
+        }
+        return Float.compare(dvd2.getCost(), dvd1.getCost());
+    }
+}
