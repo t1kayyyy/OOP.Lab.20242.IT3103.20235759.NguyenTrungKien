@@ -1,399 +1,438 @@
 package hust.soict.hedspi.aims;
-
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 import hust.soict.hedspi.aims.cart.Cart;
-import hust.soict.hedspi.aims.media.DigitalVideoDisc;
-import hust.soict.hedspi.aims.store.Store;
-import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.media.Book;
 import hust.soict.hedspi.aims.media.CompactDisc;
-import hust.soict.hedspi.aims.media.Track;
-import hust.soict.hedspi.aims.media.Playable;
-import hust.soict.hedspi.aims.media.Disc;
+import hust.soict.hedspi.aims.media.DigitalVideoDisc;
+import hust.soict.hedspi.aims.media.Media;
 import hust.soict.hedspi.aims.media.MediaComparatorByCostTitle;
 import hust.soict.hedspi.aims.media.MediaComparatorByTitleCost;
+import hust.soict.hedspi.aims.store.Store;
 
 public class Aims {
-	 static Scanner scanner = new Scanner(System.in);
-	 static Store store = new Store();
-	 static Cart cart = new Cart();
-
-	public static void showMenu() {
-		while(true) {
-			System.out.println("AIMS: ");
-			System.out.println("--------------------------------");
-			System.out.println("1. View store");
-			System.out.println("2. Update store");
-			System.out.println("3. See current cart");
-			System.out.println("0. Exit");
-			System.out.println("--------------------------------");
-			System.out.println("Please choose a number: 0-1-2-3");
-
-			int choice = scanner.nextInt();
-            if (choice == 0) {
-            	System.out.println("Exiting...");
-                break;
-            }
-            else if (choice == 1) {
-                store.printStore();
-                storeMenu();
-            }
-            else if (choice == 2) {
-                updateStore();
-            }
-            else if (choice == 3) {
-            	cart.print();
-                cartMenu();
-            }
-		}
-
-	}
-
-	public static void storeMenu() {
-		while(true) {
-			System.out.println("Options: ");
-			System.out.println("--------------------------------");
-			System.out.println("1. See a media’s details");
-			System.out.println("2. Add a media to cart");
-			System.out.println("3. Play a media");
-			System.out.println("4. See current cart");
-			System.out.println("0. Back");
-			System.out.println("--------------------------------");
-			System.out.println("Please choose a number: 0-1-2-3-4");
-
-			int choice = scanner.nextInt();
-            if (choice == 0) {
-            	break;
-            }
-            else if (choice == 1) {
-                System.out.print("Please enter the title of media: ");
-                scanner.nextLine();
-                String mediaName = scanner.nextLine();
-                Media media = store.getMedia(mediaName);
-                if (media == null)
-                	System.out.println("Media " + mediaName + " not found.");
-                else{
-                    System.out.println(media);
-                    mediaDetailsMenu(media);
-                }
-            }
-            else if (choice == 2) {
-                System.out.print("Please enter the title of media: ");
-                scanner.nextLine();
-                String mediaName = scanner.nextLine();
-                Media media = store.getMedia(mediaName);
-                if (media == null)
-                	System.out.println("Media " + mediaName + " not found.");
-                else{
-                    cart.addMedia(media);
-                    cart.print();
-                }
-            }
-            else if (choice == 3) {
-                System.out.print("Please enter the title of media: ");
-                scanner.nextLine();
-                String mediaName = scanner.nextLine();
-                Media media = store.getMedia(mediaName);
-                if (media == null)
-                	System.out.println("Media " + mediaName + " not found.");
-                else if (media instanceof Book)
-                	System.out.println("Media need be CD or DVD.");
-                else store.playMedia(media);
-            }
-            else if (choice == 4) {
-            	cart.print();
-            	cartMenu();
-            }
-		}
-	}
-
-	public static void mediaDetailsMenu(Media media) {
-		while(true) {
-			System.out.println("Options: ");
-			System.out.println("--------------------------------");
-			System.out.println("1. Add to cart");
-			if (!(media instanceof Book)) System.out.println("2. Play");
-			System.out.println("0. Back");
-			System.out.println("--------------------------------");
-			System.out.print("Please choose a number: 0-1");
-			if (!(media instanceof Book)) System.out.println("-2");
-			else System.out.println();
-
-			int choice = scanner.nextInt();
-
-			if (choice == 0) {
-				break;
-			}
-			else if (choice == 1) {
-				cart.addMedia(media);
-				cart.print();
-			}
-			else if (choice == 2 && !(media instanceof Book)) {
-				store.playMedia(media);
-			}
-		}
-	}
-
-    public static void updateStore() {
-    	while(true) {
-    		System.out.println("Options: ");
-    		System.out.println("--------------------------------");
-    		System.out.println("1. Add a media to store");
-    		System.out.println("2. Remove a media from store");
-    		System.out.println("0. Back");
-    		System.out.println("--------------------------------");
-    		System.out.println("Please choose a number: 0-1-2");
-
-    		int choice = scanner.nextInt();
-    		if (choice == 0) {
-    			break;
-    		}
-    		else if (choice == 1) {
-    			addMedia();
-    		}
-    		else if (choice == 2) {
-    			System.out.print("Please enter the title of media: ");
-    			scanner.nextLine();
-    			String mediaName = scanner.nextLine();
-    			Media media = store.getMedia(mediaName);
-    			if (media == null)
-    				System.out.println("Media " + mediaName + " not found in the cart");
-    			else{
-    				store.removeMedia(media);
-    			}
-    		}
-    	}
-    }
-
-    static public void addMedia(){
-        while(true) {
-        	System.out.println("Options: ");
-        	System.out.println("-------------------------------");
-        	System.out.println("1. Add a book");
-        	System.out.println("2. Add a CD");
-        	System.out.println("3. Add a DVD");
-        	System.out.println("0. Back");
-        	System.out.println("-------------------------------");
-        	System.out.println("Please choose a number: 0-1-2-3");
-
-        	int choice = scanner.nextInt();
-
-        	if (choice == 0){
-        		break;
-        	}
-        	else {
-        		System.out.println("Enter the title: ");
-        		scanner.nextLine();
-        		String title = scanner.nextLine();
-        		System.out.println("Enter the category: ");
-        		String category = scanner.nextLine();
-        		System.out.println("Enter the cost: ");
-        		float cost = scanner.nextFloat();
-        		if (choice == 1){
-        			System.out.println("Enter the authors(different names separated by spaces): ");
-        			scanner.nextLine();
-        			String authors = scanner.nextLine();
-        			if(authors != ""){
-        				String[] authorsArray = authors.split(" ");
-        				List<String> authorsList = Arrays.asList(authorsArray);
-        				store.addMedia(new Book(title, category, cost, authorsList));
-        			}
-        			else store.addMedia(new Book(title, category, cost));
-        		}
-        		else if (choice == 2){
-        			System.out.println("Enter the length (leave blank if unknown): ");
-        			scanner.nextLine();
-        			String inp = scanner.nextLine();
-        			if (inp.isEmpty()) store.addMedia(new CompactDisc(title, category, cost));
-        			else {
-        				int length = Integer.parseInt(inp);
-        				System.out.println("Enter the director: ");
-        				String director = scanner.nextLine();
-        				System.out.println("Enter the artist: ");
-        				String artist = scanner.nextLine();
-        				System.out.println("Enter the number of tracks: ");
-        				int tracks = scanner.nextInt();
-        				ArrayList<Track> trackList = new ArrayList<Track>();
-        				for (int i = 0; i < tracks; i++) {
-        					System.out.println("Track " + (i+1) + " : ");
-        					System.out.println("Enter the title of the track: ");
-        					scanner.nextLine();
-        					String trackTitle = scanner.nextLine();
-        					System.out.println("Enter the duration of the track: ");
-        					int duration = scanner.nextInt();
-        					trackList.add(new Track(trackTitle, duration));
-        					System.out.println("Track " + trackTitle + " has been added to the CD");
-        				}
-        				store.addMedia(new CompactDisc(title, category, cost, length, director, artist, trackList));
-        			}
-        		}
-        		else if (choice == 3){
-        			System.out.println("Enter the length (leave blank if unknown): ");
-        			scanner.nextLine();
-        			String inp = scanner.nextLine();
-        			if (inp.isEmpty()) store.addMedia(new DigitalVideoDisc(title, category, cost));
-        			else {
-        				int length = Integer.parseInt(inp);
-        				System.out.println("Enter the director: ");
-        				String director = scanner.nextLine();
-        				store.addMedia(new DigitalVideoDisc(title, category, director, length, cost));
-        			}
-        		}
-        	}
-
-        }
-    }
-
-	public static void cartMenu() {
-		while(true) {
-			System.out.println("Options: ");
-			System.out.println("--------------------------------");
-			System.out.println("1. Filter medias in cart");
-			System.out.println("2. Sort medias in cart");
-			System.out.println("3. Remove media from cart");
-			System.out.println("4. Play a media");
-			System.out.println("5. Place order");
-			System.out.println("0. Back");
-			System.out.println("--------------------------------");
-			System.out.println("Please choose a number: 0-1-2-3-4-5");
-
-			int choice = scanner.nextInt();
-    		if (choice == 0) {
-    			break;
-    		}
-            else if (choice == 1) {
-                filterCartMenu();
-            }
-            else if (choice == 2) {
-                sortCartMenu();
-            }
-    		else if (choice == 3) {
-                System.out.print("Please enter the title of media: ");
-                scanner.nextLine();
-                String mediaName = scanner.nextLine();
-                Media media = cart.search(mediaName);
-                if (media == null) System.out.println("Media " + mediaName + " not found in the cart");
-                else{
-                    cart.removeMedia(media);
-                }
-    		}
-    		else if (choice == 4) {
-                System.out.print("Please enter the title of media: ");
-                scanner.nextLine();
-                String mediaName = scanner.nextLine();
-                Media media = store.getMedia(mediaName);
-                if (media == null)
-                	System.out.println("Media " + mediaName + " not found in cart.");
-                else if (media instanceof Book)
-                	System.out.println("Media need be CD or DVD.");
-                else cart.playMedia(media);
-    		}
-    		else if (choice == 5) {
-                System.out.println("Order is created");
-                cart = new Cart();
-    		}
-		}
-	}
-
-    public static void filterCartMenu(){
-    	while(true) {
-    		System.out.println("Options: ");
-    		System.out.println("--------------------------------");
-    		System.out.println("1. By id");
-    		System.out.println("2. By title");
-    		System.out.println("0. Back");
-    		System.out.println("--------------------------------");
-    		System.out.println("Please choose a number: 0-1-2");
-
-    		int choice = scanner.nextInt();
-
-    		if (choice == 0) {
-    			break;
-    		}
-    		else if (choice == 1) {
-    			System.out.println("Enter the id: ");
-    			int id = scanner.nextInt();
-    			ArrayList<Media> media = cart.filterById(id);
-    			if (!media.isEmpty()){
-    				for (Media item : media) {
-    					System.out.println(item.toString());
-    				}
-    			}
-    			else System.out.println("Media with id " + id + " not found");
-    		}
-    		else if (choice == 2) {
-    			System.out.println("Enter the title: ");
-    			scanner.nextLine();
-    			String title = scanner.nextLine();
-    			ArrayList<Media> media = cart.filterByTitle(title);
-    			if (!media.isEmpty()) {
-    				for (Media item : media) {
-    					System.out.println(item.toString());
-    				}
-    			}
-    			else System.out.println("Media name " + title + " not found");
-    		}
-    	}
-    }
-
-    public static void sortCartMenu(){
-        while(true) {
-        	System.out.println("Options: ");
-        	System.out.println("--------------------------------");
-        	System.out.println("1. By title");
-        	System.out.println("2. By cost");
-        	System.out.println("0. Back");
-        	System.out.println("--------------------------------");
-        	System.out.println("Please choose a number: 0-1-2");
-
-        	int choice = scanner.nextInt();
-
-        	if (choice == 0) {
-        		break;
-        	}
-        	else if (choice == 1) {
-        		cart.sortMediaByTitle();
-        	}
-        	else if (choice == 2) {
-        		cart.sortMediaByCost();
-        	}
-        }
-    }
-
-	public static void main(String[] args) {
+	static Scanner sc = new Scanner(System.in);
+    static Store InStore = new Store();
+    static Cart anOrder = new Cart();
+	public static void showMenu() {  
+	    System.out.println("AIMS: ");  
+	    System.out.println("--------------------------------");  
+	    System.out.println("1. View store");  
+	    System.out.println("2. Update store");  
+	    System.out.println("3. See current cart");  
+	    System.out.println("0. Exit");  
+	    System.out.println("--------------------------------");  
+	    System.out.println("Please choose a number: 0-1-2-3");  
+	    int a= sc.nextInt();
+	    if(a==0) {
+	    	return;
+	    }else if(a==1) {
+	    	StoreMenu();
+	    }else if(a==2) {
+	    	UpdateMenu();
+	    }else if(a==3) {
+	    	cartMenu();
+	    }
+	}  
+	public static void UpdateMenu() {
 		// TODO Auto-generated method stub
-		DigitalVideoDisc dvd1 = new DigitalVideoDisc("The Lion King","Animation","Roger Allers",87,19.95f);
-        DigitalVideoDisc dvd2 = new DigitalVideoDisc("Star Wars","Science Fiction","George Lucas",87,24.95f);
-        DigitalVideoDisc dvd3 = new DigitalVideoDisc("Aladin","Animation",18.99f);
-        Book book1 = new Book("Clean Code", "Programming", 45.5f, Arrays.asList("Robert C. Martin"));
-        Book book2 = new Book("The Pragmatic Programmer", "Programming", 50.0f, Arrays.asList("Andrew Hunt David Thomas"));
-        store.addMedia(dvd1);
-        store.addMedia(dvd2);
-        store.addMedia(dvd3);
-        store.addMedia(book1);
-        store.addMedia(book2);
-        cart.addMedia(dvd1);
-        cart.addMedia(dvd2);
-        showMenu();
+		System.out.println("1. AddMedia");
+		System.out.println("2. RemoveMedia");
+		int a = sc.nextInt();
+		sc.nextLine();
+		if(a==1) {
+			System.out.println("Dien vao the loai ban muon them(Book,DVD,CD):");
+			String type = sc.nextLine();
+			if(type.equals("Book")) {
+				System.out.println("Dien tieu de:");
+				String title= sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine();
+				System.out.println("Dien gia:");
+				int cost = sc.nextInt();
+				ArrayList<String> author= new ArrayList<>();
+				System.out.println("so luong tac gia:");
+				int ntacgia=sc.nextInt();
+				sc.nextLine();
+				for(int i=0;i<ntacgia;i++) {
+					String n = sc.nextLine();
+					author.add(n);
+				}
+				Book book = new Book(title,category,cost,author);
+				InStore.addMedia(book);
+			}else if(type.equals("DVD")) {
+				System.out.println("Dien tieu de:");
+				String title = sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine(); 
+				System.out.println("Dien giam doc:");
+				String director = sc.nextLine();
+				System.out.println("Dien do dai:");
+				int length = sc.nextInt();
+				System.out.println("Dien gia:");
+				float cost = sc.nextFloat();
+				DigitalVideoDisc dvd = new DigitalVideoDisc(title,category,director,length,cost);
+				InStore.addMedia(dvd);
+			}else if(type.equals("CD")) {
+				System.out.println("Dien tieu de:");
+				String title = sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine();
+				System.out.println("Dien gia:");
+				float cost = sc.nextInt();
+				CompactDisc cd = new CompactDisc(title,category,cost);
+				InStore.addMedia(cd);
+			}
+		}else if(a==2) {
+			System.out.println("Dien vao the loai ban xoa di(Book,DVD,CD):");
+			String type = sc.nextLine();
+			if(type.equals("Book")) {
+				System.out.println("Dien tieu de:");
+				String title= sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine();
+				System.out.println("Dien gia:");
+				int cost = sc.nextInt();
+				ArrayList<String> author= new ArrayList<>();
+				System.out.println("so luong tac gia:");
+				int ntacgia=sc.nextInt();
+				sc.nextLine();
+				for(int i=0;i<ntacgia;i++) {
+					String n = sc.nextLine();
+					author.add(n);
+				}
+				Book book = new Book(title,category,cost,author);
+				int check=1;
+				for(int i=0;i<InStore.itemsInStore.size();i++) {
+					if(InStore.itemsInStore.get(i).equals(book)) {
+						check=0;
+						InStore.removeMedia(book);
+						System.out.println("Da xoa");
+					}
+				}
+				if (check==1) {
+					System.out.println("Khong ton tai trong Store");
+				}
+			}else if(type.equals("DVD")) {
+				System.out.println("Dien tieu de:");
+				String title = sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine(); 
+				System.out.println("Dien giam doc:");
+				String director = sc.nextLine();
+				System.out.println("Dien do dai:");
+				int length = sc.nextInt();
+				System.out.println("Dien gia:");
+				float cost = sc.nextFloat();
+				DigitalVideoDisc dvd = new DigitalVideoDisc(title,category,director,length,cost);
+				int check=1;
+				for(int i=0;i<InStore.itemsInStore.size();i++) {
+					if(InStore.itemsInStore.get(i).equals(dvd)) {
+						check=0;
+						InStore.removeMedia(dvd);
+						System.out.println("Da xoa");
+					}
+				}
+				if (check==1) {
+					System.out.println("Khong ton tai trong Store");
+				}
+			}else if(type.equals("CD")) {
+				System.out.println("Dien tieu de:");
+				String title = sc.nextLine();
+				System.out.println("Dien the loai:");
+				String category = sc.nextLine();
+				System.out.println("Dien gia:");
+				float cost = sc.nextInt();
+				CompactDisc cd = new CompactDisc(title,category,cost);
+				int check=1;
+				for(int i=0;i<InStore.itemsInStore.size();i++) {
+					if(InStore.itemsInStore.get(i).equals(cd)) {
+						check=0;
+						InStore.removeMedia(cd);
+						System.out.println("Da xoa");
+					}
+				}
+				if (check==1) {
+					System.out.println("Khong ton tai trong Store");
+				}
+		}
+	}
+}
+	public static void StoreMenu() {
+		// TODO Auto-generated method stub 
+		    System.out.println("Options: ");  
+		    System.out.println("--------------------------------");  
+		    System.out.println("1. See a media’s details");  
+		    System.out.println("2. Add a media to cart");  
+		    System.out.println("3. Play a media");  
+		    System.out.println("4. See current cart");  
+		    System.out.println("0. Back");  
+		    System.out.println("--------------------------------");  
+		    System.out.println("Please choose a number: 0-1-2-3-4");  
+		    int a=sc.nextInt();
+		    sc.nextLine();
+		    if(a==0) {
+		    	 showMenu();
+		    }else if(a==1) {
+		    	Check();
+		    }else if(a==2) {
+		    	AddAMediaToCart();
+		    }else if(a==3) {
+		    	PlayAMedia();
+		    }else if(a==4) {
+		    	cartMenu();
+		    }
+	}
+	public static void Check() {
+		// TODO Auto-generated method stub
+		int check=1;
+		System.out.println("Dien vao the loai muon tim kiem(Book,DVD,CD):");
+		String theloai = sc.nextLine();
+		if(theloai.equalsIgnoreCase("Book")) {
+			System.out.println("Dien vao tieu de book:");
+			String title = sc.nextLine();
+			for(int i=0;i<InStore.itemsInStore.size();i++) {
+				if(InStore.itemsInStore.get(i) instanceof Book) {
+					if(InStore.itemsInStore.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(InStore.itemsInStore.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("DVD")) {
+			System.out.println("Dien vao tieu de DVD:");
+			String title = sc.nextLine();
+			for(int i=0;i<InStore.itemsInStore.size();i++) {
+				if(InStore.itemsInStore.get(i) instanceof DigitalVideoDisc) {
+					if(InStore.itemsInStore.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(InStore.itemsInStore.get(i).toString());
+						check=0;
+						mediaDetailsMenu();
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("CD")){
+			System.out.println("Dien vao tieu de CD:");
+			String title = sc.nextLine();
+			for(int i=0;i<InStore.itemsInStore.size();i++) {
+				if(InStore.itemsInStore.get(i) instanceof CompactDisc) {
+					if(InStore.itemsInStore.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(InStore.itemsInStore.get(i).toString());
+						check=0;
+						mediaDetailsMenu();
+					}
+				}
+			}
+		}
+		if(check==1) {
+			System.out.println("Khong co Media can tim");
+		}
+	}
+	public static void mediaDetailsMenu() {
+		// TODO Auto-generated method stub
+	    System.out.println("Options: ");  	
+	    System.out.println("--------------------------------");  
+	    System.out.println("1. Add to cart");  
+	    System.out.println("2. Play");  
+	    System.out.println("0. Back");  
+	    System.out.println("--------------------------------");  
+	    System.out.println("Please choose a number: 0-1-2");
+	    int a = sc.nextInt();
+	    sc.nextLine();
+	    if(a==1) {
+	    	AddAMediaToCart();
+	    }else if(a==2) {
+	    	System.out.println("dang choi");
+	    }else if(a==3) {
+	    	showMenu();
+	    }
+	}
+	public static void AddAMediaToCart() {
+		int check=1;
+		InStore.display();
+		System.out.println("Nhap vao tieu de de them vao gio hang:");
+		String title = sc.nextLine();
+		for(int i=0;i<InStore.itemsInStore.size();i++) {
+			if(InStore.itemsInStore.get(i).getTitle().equalsIgnoreCase(title)) {
+				anOrder.addMedia(InStore.itemsInStore.get(i));
+				check=0;
+			}
+		}
+		if(check==1) {
+			System.out.println("Khong co trong cua hang");
+		}
+	}
+	public static void PlayAMedia() {
+		int check=1;
+		InStore.display();
+		System.out.println("Nhap vao tieu de de play:");
+		String title = sc.nextLine();
+		for(int i=0;i<InStore.itemsInStore.size();i++) {
+			if(InStore.itemsInStore.get(i).getTitle().equalsIgnoreCase(title)) {
+				System.out.println("Dang choi ");
+				check=0;
+			}
+		}
+		if(check==1) {
+			System.out.println("Khong co trong cua hang");
+		}
+	}
+	public static void cartMenu() {  
+	    System.out.println("Options: ");  
+	    System.out.println("--------------------------------");  
+	    System.out.println("1. Filter media in cart");  
+	    System.out.println("2. Sort media in cart");  
+	    System.out.println("3. Remove media from cart");  
+	    System.out.println("4. Play a media");  
+	    System.out.println("5. Place order");  
+	    System.out.println("0. Back");  
+	    System.out.println("--------------------------------");  
+	    System.out.println("Please choose a number: 0-1-2-3-4-5");  
+	    int a = sc.nextInt();
+	    sc.nextLine();
+	    if(a==0) {
+	    	showMenu();
+	    }else if(a==1) {
+	    	Feic();
+	    }else if(a==2) {
+	    	SortMediaIncart();
+	    }else if(a==3) {
+	    	System.out.print("Da xoa");
+	    }else if(a==4) {
+	    	PlayAMedia();
+	    }else if(a==5) {
+	    	PlaceOrder();	
+	    }
+	} 
+	public static void PlaceOrder() {
+		System.out.println("Don hang da duoc tao");
+		for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+			anOrder.removeMedia(anOrder.itemsOrdered.get(i));
+		}
+	}
+	public static void Feic() {
+		System.out.println("1. Loc theo tieu de");
+		System.out.println("2. Loc theo Id");
+		int a=sc.nextInt();
+		sc.nextLine();
+		if(a==1) {
+		int check=1;
+		System.out.println("Dien vao the loai muon loc(Book,DVD,CD):");
+		String theloai = sc.nextLine();
+		if(theloai.equalsIgnoreCase("Book")) {
+			System.out.println("Dien vao tieu de book:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof Book) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("DVD")) {
+			System.out.println("Dien vao tieu de DVD:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof DigitalVideoDisc) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("CD")){
+			System.out.println("Dien vao tieu de CD:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof CompactDisc) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}
+		if(check==1) {
+			System.out.println("Khong co Media can tim");
+		}
+	}else if(a==2) {
+		int check=1;
+		System.out.println("Dien vao the loai muon tim kiem(Book,DVD,CD):");
+		String theloai = sc.nextLine();
+		if(theloai.equalsIgnoreCase("Book")) {
+			System.out.println("Dien vao ID book:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof Book) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("DVD")) {
+			System.out.println("Dien vao ID DVD:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof DigitalVideoDisc) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}else if(theloai.equalsIgnoreCase("CD")){
+			System.out.println("Dien vao ID CD:");
+			String title = sc.nextLine();
+			for(int i=0;i<anOrder.itemsOrdered.size();i++) {
+				if(anOrder.itemsOrdered.get(i) instanceof CompactDisc) {
+					if(anOrder.itemsOrdered.get(i).getTitle().equalsIgnoreCase(title)) {
+						System.out.println(anOrder.itemsOrdered.get(i).toString());
+						check=0;
+					}
+				}
+			}
+		}
+		if(check==1) {
+			System.out.println("Khong co Media can tim");
+		}
+	}
+}
+	public static void SortMediaIncart() {
+		System.out.println("1. SortByCostTitle");
+		System.out.println("2. SortByTitleCost");
+		int a= sc.nextInt();
+		sc.nextLine();
+		if(a==1) {
+			anOrder.itemsOrdered.sort(new MediaComparatorByCostTitle());
+			System.out.println("Da sx");
+		}else if(a==2) {
+			anOrder.itemsOrdered.sort(new MediaComparatorByTitleCost());
+			System.out.println("Da sx");
+	}
+}
+	public static void main(String[] args) {
+		  Book book1 = new Book("Clean Code", "Programming", 300, new ArrayList<>(List.of("Robert C. Martin")));
+		    Book book2 = new Book("Java Core", "Programming", 250, new ArrayList<>(List.of("Cay Horstmann")));
+		    CompactDisc cd1 = new CompactDisc("Best Hits", "Music", 150.0f);
+		    DigitalVideoDisc dvd1 = new DigitalVideoDisc("Inception", "Sci-fi", "Christopher Nolan", 148, 200.0f);
+		    DigitalVideoDisc dvd2 = new DigitalVideoDisc("The Matrix", "Action", "Wachowski", 136, 180.0f);
 
+		    InStore.addMedia(book1);
+		    InStore.addMedia(book2);
+		    InStore.addMedia(cd1);
+		    InStore.addMedia(dvd1);
+		    InStore.addMedia(dvd2);
 
-		//TEST
-		/*
-		DigitalVideoDisc [] dvdList = new DigitalVideoDisc[3];
-		dvdList[0] = new DigitalVideoDisc("abc", "mnq", "def", 84, 19.2f);
-		dvdList[1] = new DigitalVideoDisc("amsm", "msab", 19.1f);
-		dvdList[2] = new DigitalVideoDisc("sad", "asgdh", 2.3f);
-		anOrder.addDigitalVideoDisc(dvdList);
-		System.out.println("Total Cost is:");
-		System.out.println(anOrder.totalCost());
-		anOrder.removeDigitalVideoDisc(dvdList[2]);
-		System.out.println("Total Cost is:");
-		System.out.println(anOrder.totalCost());
-		*/
+		    // Hiển thị Store
+		    System.out.println("Store hiện tại:");
+		    InStore.display();
+
+		    showMenu();
 	}
 
 }

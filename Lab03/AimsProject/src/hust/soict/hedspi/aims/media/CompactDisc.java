@@ -1,77 +1,69 @@
 package hust.soict.hedspi.aims.media;
-
-import hust.soict.hedspi.aims.media.Playable;
-import hust.soict.hedspi.aims.media.Track;
 import java.util.ArrayList;
-import java.util.List;
-
-public class CompactDisc extends Disc implements Playable {
+public class CompactDisc extends Disc implements Playable{
 	private String artist;
-	private List<Track> tracks = new ArrayList<>();
+	private ArrayList<Track> tracks = new ArrayList<>();
+    public CompactDisc(String title, String category, float cost, String artist, ArrayList<Track> tracks) {
+        super(title, category, cost);
+        this.artist = artist;
+        this.tracks = tracks;
+    }
+   
+	public CompactDisc(String title, String category, float cost) {
+        super(title, category, cost);
+    }
 	public CompactDisc() {
 		// TODO Auto-generated constructor stub
 	}
 	public String getArtist() {
 		return artist;
 	}
-
-	public CompactDisc(String title, String category, float cost) {
-        super(title, category, cost);
-    }
-
-    public CompactDisc(String title, String category, float cost, String artist) {
-        super(title, category, cost);
-        this.artist = artist;
-    }
-
-    public CompactDisc(String title, String category, float cost, int length, String director, String artist, ArrayList<Track> tracks) {
-        super(title, category, cost);
-
-        this.artist = artist;
-        this.tracks = tracks;
-    }
-
-	public void addTrack(Track track) {
-        if (tracks.contains(track)) {
-            System.out.println("Track \"" + track.getTitle() + "\" already exists in the list.");
-        } else {
-            tracks.add(track);
-            System.out.println("Track \"" + track.getTitle() + "\" has been added.");
-        }
-    }
-
-	public void removeTrack(Track track) {
-        if (tracks.contains(track)) {
-            tracks.remove(track);
-            System.out.println("Track \"" + track.getTitle() + "\" has been deleted.");
-        } else {
-            System.out.println("Track \"" + track.getTitle() + "\" does not exist in the list.");
-        }
-    }
-
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+	public CompactDisc(String artist) {
+		this.artist=artist;
+	}
+	public boolean checkTrack(Track t) {
+		for(int i=0;i<tracks.size();i++) {
+			if(tracks.get(i).equals(t)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public void addTrack(Track t) {
+		if(!checkTrack(t)) {
+			tracks.add(t);
+			System.out.println("Da them");
+		}else {
+			System.out.println("Da co trong danh sach");
+		}
+	}
+	public void removeTrack(Track t) {
+		if(checkTrack(t)) {
+			tracks.remove(t);
+			System.out.println("Da xoa");
+		}else {
+			System.out.println("Khong ton tai");
+		}
+	}
 	public int getLength() {
-        int totalLength = 0;
-        for (Track track : tracks) {
-            totalLength += track.getLength();
-        }
-        return totalLength;
-    }
-
+		int sum=0;
+		for(int i=0;i<tracks.size();i++) {
+			sum+=tracks.get(i).getLength();
+		}
+		return sum;
+	}
 	@Override
 	public void play() {
 		// TODO Auto-generated method stub
-        System.out.println("Playing CompactDisc: " + this.getTitle());
-        System.out.println("Artist: " + this.getArtist());
-        System.out.println("Tracks:");
-        for (Track track : tracks) {
-            track.play();
-        }
+		for(int i=0;i<tracks.size();i++) {
+			tracks.get(i).play();
+		}
 	}
-
+    @Override
     public String toString() {
-        return "ID: " + this.getId() + " - CD: " + this.getTitle() + " - Category: " + this.getCategory() +
-                " - Artist" + this.getArtist() + " - Length: " + this.getLength() + " seconds" +
-                " - Cost: " + this.getCost() + "$";
+    	return String.format("CD - %s - %s - %s - %d: %.2f $", getTitle(), getCategory(), getArtist(), getLength(), getCost());
     }
-
 }

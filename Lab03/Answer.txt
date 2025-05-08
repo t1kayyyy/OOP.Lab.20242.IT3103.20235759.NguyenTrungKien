@@ -1,0 +1,41 @@
+1.Lớp nào nên implement interface Comparable?
+Lớp nên implement interface Comparable là lớp Media, vì đây là lớp cha của các loại phương tiện như Book, DigitalVideoDisc và CompactDisc.
+
+Lý do là vì Media là lớp chung đại diện cho tất cả các loại media có trong giỏ hàng (cart), và nếu ta muốn gọi phương thức Collections.sort() để sắp xếp danh sách các media, thì các đối tượng trong danh sách đó phải có khả năng so sánh với nhau – tức là Media phải implement Comparable<Media> và override phương thức compareTo().
+public class Media implements Comparable<Media> {
+    @Override
+    public int compareTo(Media other) {
+        // ví dụ mặc định sắp xếp theo title tăng dần
+        return this.title.compareToIgnoreCase(other.getTitle());
+    }
+}
+2.Có thể có hai quy tắc sắp xếp khác nhau (theo tiêu đề rồi giá, và theo giá rồi tiêu đề) khi dùng Comparable không?
+Không, nếu chỉ sử dụng interface Comparable thì bạn chỉ có thể có một quy tắc sắp xếp duy nhất — đó là quy tắc bạn định nghĩa trong phương thức compareTo() của lớp.
+
+Nếu bạn muốn có nhiều cách sắp xếp (ví dụ: theo tiêu đề rồi giá, hoặc theo giá rồi tiêu đề), thì bạn nên dùng interface Comparator thay vì (hoặc song song với) Comparable. Với Comparator, bạn có thể tạo nhiều lớp so sánh khác nhau và sử dụng chúng linh hoạt theo từng tình huống.
+// Comparator 1: title -> cost
+Comparator<Media> COMPARE_BY_TITLE_COST = Comparator
+        .comparing(Media::getTitle, String.CASE_INSENSITIVE_ORDER)
+        .thenComparing(Media::getCost);
+
+// Comparator 2: cost -> title
+Comparator<Media> COMPARE_BY_COST_TITLE = Comparator
+        .comparing(Media::getCost).reversed()
+        .thenComparing(Media::getTitle, String.CASE_INSENSITIVE_ORDER);
+3. Giả sử DVD có quy tắc sắp xếp khác: theo title, sau đó là độ dài giảm dần, rồi đến giá – thì cần thay đổi gì?
+Trong trường hợp này, bạn cần xử lý quy tắc sắp xếp riêng biệt cho lớp DigitalVideoDisc
+Tạo một lớp Comparator chỉ dành cho DigitalVideoDisc với quy tắc sắp xếp riêng:
+public class DVDComparator implements Comparator<DigitalVideoDisc> {
+    @Override
+    public int compare(DigitalVideoDisc d1, DigitalVideoDisc d2) {
+        int titleCmp = d1.getTitle().compareToIgnoreCase(d2.getTitle());
+        if (titleCmp != 0) return titleCmp;
+
+        int lengthCmp = Integer.compare(d2.getLength(), d1.getLength()); // giảm dần
+        if (lengthCmp != 0) return lengthCmp;
+
+        return Float.compare(d1.getCost(), d2.getCost()); // tăng dần
+    }
+}
+Sau đó, khi sắp xếp danh sách DVD:
+Collections.sort(dvdList, new DVDComparator());

@@ -1,0 +1,52 @@
+import java.util.Stack;
+import java.util.Scanner;
+public class PhongBan{
+    String tenPhongBan;
+    int soNhanVien=0;
+    final static int SO_NV_MAX=100;
+    Stack<NhanVien> stack = new Stack<>();
+    public PhongBan(String tenPhongBan){
+        this.tenPhongBan = tenPhongBan;
+    }
+    public boolean themNhanVien(NhanVien nhanvien){
+        if(soNhanVien<SO_NV_MAX){
+            soNhanVien++;
+            stack.push(nhanvien);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public NhanVien xoaNV(){
+        if(!stack.isEmpty()){
+            soNhanVien--;
+            return stack.pop();
+        }
+        return null;
+    }
+    public double tinhTongLuong(){
+        double sum=0;
+        Stack<NhanVien> newstack = (Stack<NhanVien>) stack.clone();
+        if(!newstack.isEmpty()){
+            while(!newstack.isEmpty()){
+                NhanVien nhanvien = newstack.pop();
+                sum+=nhanvien.tinhLuong();
+            }
+        }
+        return sum;
+    }
+    public void inTTin(){
+        System.out.println("Ten Phong Ban: "+this.tenPhongBan);
+        System.out.println("So Nhan Vien: "+this.soNhanVien);
+        Stack<NhanVien> copystack = (Stack<NhanVien>) stack.clone();
+        if (!copystack.isEmpty()){
+            while(!copystack.isEmpty()){
+                NhanVien nhanvien =copystack.pop();
+                nhanvien.inTTin();
+            }
+        }else{
+            System.out.println("Khong co nhan vien trong Phong Ban nay");
+        }
+    }
+}

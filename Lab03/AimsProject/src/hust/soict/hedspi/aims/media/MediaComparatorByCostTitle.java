@@ -2,11 +2,15 @@ package hust.soict.hedspi.aims.media;
 
 import java.util.Comparator;
 
-public class MediaComparatorByCostTitle implements Comparator<Media> {
+public class MediaComparatorByCostTitle implements Comparator<Media>{
+
 	@Override
-	public int compare(Media m1, Media m2) {
-        return Comparator.comparing(Media::getCost)
-                .thenComparing(Media::getTitle)
-                .compare(m1, m2);
-    }
+	public int compare(Media o1, Media o2) {
+		// TODO Auto-generated method stub
+        int costCompare = Float.compare(o2.getCost(), o1.getCost());
+        if (costCompare == 0) {
+            return o1.getTitle().compareToIgnoreCase(o2.getTitle());
+        }
+        return costCompare;
+	}
 }
