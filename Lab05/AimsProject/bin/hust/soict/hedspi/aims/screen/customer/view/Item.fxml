@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!--<AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #aaa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">-->
+<!--   <children>-->
+<!--      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">-->
+<!--         <children>-->
+<!--            <Label fx:id="lblTitle" alignment="CENTER" prefHeight="50.0" prefWidth="305.0" text="Label" />-->
+<!--            <Label fx:id="lblCost" alignment="CENTER" prefHeight="50.0" prefWidth="305.0" text="Label" />-->
+<!--            <HBox alignment="CENTER" prefHeight="50.0" spacing="20.0">-->
+<!--               <children>-->
+<!--                  <Button fx:id="btnAddToCart" mnemonicParsing="false" onAction="#btnAddToCartClicked" prefHeight="50.0" prefWidth="305.0" text="Add to Cart" />-->
+<!--                  <Button fx:id="btnPlay" mnemonicParsing="false" onAction="#btnPlayClicked" prefHeight="50.0" prefWidth="305.0" text="Play" />-->
+<!--               </children>-->
+<!--            </HBox>-->
+<!--         </children>-->
+<!--      </VBox>-->
+<!--   </children>-->
+<!--</AnchorPane>-->
+
+<AnchorPane style="-fx-background-color: #aaa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" prefHeight="200.0">
+         <children>
+            <Label fx:id="lblTitle" alignment="CENTER" prefWidth="200.0" text="Label" />
+            <Label fx:id="lblCost" alignment="CENTER" prefWidth="200.0" text="Label" />
+            <HBox alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button fx:id="btnAddToCart" alignment="CENTER" mnemonicParsing="false" onAction="#btnAddToCartClicked" prefHeight="50.0" prefWidth="150.0" text="Add to Cart" />
+                  <Button fx:id="btnPlay" alignment="CENTER" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#btnPlayClicked" prefHeight="50.0" prefWidth="150.0" text="Play" textAlignment="CENTER" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
